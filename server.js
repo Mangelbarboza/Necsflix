@@ -394,24 +394,23 @@ app.post('/api/login/admin', (req, res) => {
 });
 
 // Ruta para ejecutar consultas SQL
-app.post('/execute-sql', (req, res) => {
+app.post('/api/execute-sql', (req, res) => {
   const { query } = req.body;
 
-  // Verificar si el query no está vacío
   if (!query || query.trim() === '') {
       return res.status(400).json({ error: 'Consulta vacía' });
   }
 
-  // Ejecutar la consulta en la base de datos
   db.all(query, [], (err, rows) => {
       if (err) {
           console.error('Error ejecutando consulta SQL:', err.message);
-          res.status(500).json({ error: 'Error al ejecutar la consulta: ' + err.message });
-      } else {
-          res.json({ result: rows });
+          return res.status(500).json({ error: err.message });
       }
+
+      res.json({ result: rows });
   });
 });
+
 // Definir una lista de administradores quemados
 const administradores = [
   { email: 'luis@gmail.com', password: '1234' },

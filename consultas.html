@@ -44,46 +44,68 @@
     <!-- Scripts -->
     <script>
         function executeSQL() {
-            const query = document.getElementById('sql-query').value;
+    const query = document.getElementById('sql-query').value;
 
-            // Llamada a un API (simulada aquí) para ejecutar consultas SQL
-            fetch('http://localhost:3000/api/execute-sql', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ query })
-            })
-            .then(response => response.json())
-            .then(data => {
-                const resultContainer = document.getElementById('sql-result');
-                resultContainer.textContent = JSON.stringify(data, null, 2);
-            })
-            .catch(error => {
-                console.error('Error al ejecutar la consulta SQL:', error);
-                document.getElementById('sql-result').textContent = 'Error al ejecutar la consulta.';
-            });
+    if (!query.trim()) {
+        alert('Escribe una consulta SQL.');
+        return;
+    }
+
+    fetch('http://localhost:3000/api/execute-sql', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ query })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const resultDiv = document.getElementById('sql-result');
+        
+        if (data.error) {
+            resultDiv.textContent = `Error: ${data.error}`;
+            return;
         }
 
-        // Código para manejar el perfil en el header
-        document.addEventListener("DOMContentLoaded", () => {
-            const changeUserButton = document.getElementById("change-user");
-            const profileNameSpan = document.getElementById("profile-name");
+        // Si hay resultados, generamos una tabla HTML
+        const results = data.result;
 
-            // Obtener el nombre del perfil del localStorage
-            const selectedProfileName = localStorage.getItem("selectedProfileName");
+        if (results.length === 0) {
+            resultDiv.textContent = 'No hay resultados para mostrar.';
+            return;
+        }
 
-            if (selectedProfileName) {
-                profileNameSpan.textContent = `Perfil: ${selectedProfileName}`;
-            } else {
-                profileNameSpan.textContent = "Perfil no seleccionado";
-            }
+        // Crear la tabla
+        let table = '<table border="1" style="border-collapse: collapse; width: 100%;">';
+        table += '<thead><tr>';
 
-            // Asignar la función de redirección al botón "Cambiar de usuario"
-            changeUserButton.addEventListener("click", () => {
-                window.location.href = "profile.html";
-            });
+        // Crear encabezados de tabla con las claves del primer objeto
+        Object.keys(results[0]).forEach(key => {
+            table += `<th style="padding: 8px; text-align: left;">${key}</th>`;
         });
+
+        table += '</tr></thead><tbody>';
+
+        // Crear filas con los valores de los objetos
+        results.forEach(row => {
+            table += '<tr>';
+            Object.values(row).forEach(value => {
+                table += `<td style="padding: 8px;">${value}</td>`;
+            });
+            table += '</tr>';
+        });
+
+        table += '</tbody></table>';
+
+        // Mostrar la tabla en el contenedor de resultados
+        resultDiv.innerHTML = table;
+    })
+    .catch(error => {
+        console.error('Error ejecutando la consulta:', error);
+        document.getElementById('sql-result').textContent = 'Error al ejecutar la consulta.';
+    });
+}
+
     </script>
 </body>
 </html>
