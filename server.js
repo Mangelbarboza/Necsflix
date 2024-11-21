@@ -16,8 +16,11 @@ app.use(express.urlencoded({ extended: true }));
 
 // Configura CORS para permitir solicitudes desde el puerto 5500
 app.use(cors({
-  origin: 'http://127.0.0.1:5500'
+  origin: ['http://127.0.0.1:5500', 'https://necsflix.onrender.com'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos HTTP permitidos
+  credentials: true // Si necesitas usar cookies o encabezados de autenticación
 }));
+
 
 app.use(express.json());
 app.use(express.static(__dirname));
