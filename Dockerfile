@@ -1,23 +1,20 @@
-# Imagen base de Node.js
-FROM node:18
+# Usa una imagen base oficial de Node.js
+FROM node:16-alpine
 
-# Directorio de trabajo dentro del contenedor
+# Establece el directorio de trabajo
 WORKDIR /app
 
-# Copiar los archivos necesarios para instalar dependencias
+# Copia los archivos del proyecto al contenedor
 COPY package*.json ./
+COPY . .
 
 COPY . /app
 
-
-# Instalar dependencias
+# Instala las dependencias
 RUN npm install
 
-# Copiar el resto del proyecto al contenedor
-COPY . .
-
-# Exponer el puerto en el contenedor
+# Expone el puerto
 EXPOSE 3000
 
-# Comando para ejecutar tu aplicación
+# Comando para iniciar la aplicación
 CMD ["node", "server.js"]

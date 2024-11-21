@@ -3,15 +3,17 @@ const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors'); // Importa CORS
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000; // Usar el puerto dinámico asignado por Render
+
 const path = require('path');
 
 // Configuración de CORS
 const allowedOrigins = [
   'http://127.0.0.1:5500', // Para desarrollo local
-  'https://necsflix.onrender.com' // Para producción
+  'https://necsflix.onrender.com', // Dominio de tu frontend en producción
 ];
 
+// Configuración de CORS
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -21,19 +23,21 @@ app.use(cors({
     }
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos HTTP permitidos
-  credentials: true // Si estás usando cookies o encabezados personalizados
+  credentials: true
 }));
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
 
 // Configura la base de datos SQLite
-const db = new sqlite3.Database('./database.sqlite', (err) => {
+const db = new sqlite3.Database('./data/database.sqlite', (err) => {
   if (err) {
     console.error('Error al abrir la base de datos', err.message);
   } else {
     console.log('Conexión a la base de datos SQLite exitosa');
+    // Crear tabla si no existe
     db.run(`CREATE TABLE IF NOT EXISTS Cuenta (
       ID INTEGER PRIMARY KEY AUTOINCREMENT,
       Nombre TEXT,
@@ -50,6 +54,7 @@ const db = new sqlite3.Database('./database.sqlite', (err) => {
     });
   }
 });
+
 
 // Ruta principal
 app.get('/', (req, res) => {

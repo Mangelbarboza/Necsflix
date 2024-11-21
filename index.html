@@ -90,7 +90,7 @@
                 const contrasena = document.getElementById('contrasena-registro').value;
                 const plan = document.getElementById('plan-registro').value;
 
-                fetch('http://localhost:3000/register', {
+                fetch('https://necsflix-backend.onrender.com/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -115,7 +115,7 @@
             const correo = document.getElementById('correo').value;
             const contrasena = document.getElementById('contrasena').value;
 
-            fetch('http://localhost:3000/login', {
+            fetch('https://necsflix-backend.onrender.com/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ correo, contrasena })
@@ -141,7 +141,7 @@
 
             console.log('Botón de admin clickeado'); // Depuración
 
-            fetch('http://localhost:3000/admin-login', {
+            fetch('https://necsflix-backend.onrender.com/admin-login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ correo, contrasena })
