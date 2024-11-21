@@ -4,6 +4,12 @@ const cors = require('cors'); // Importa CORS
 
 const app = express();
 const PORT = 3000;
+const path = require('path');
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -14,7 +20,8 @@ app.use(cors({
 }));
 
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(__dirname));
+
 
 // Configura la base de datos SQLite
 const db = new sqlite3.Database('./database.sqlite', (err) => {
