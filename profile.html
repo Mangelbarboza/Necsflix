@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrar Perfiles</title>
+    <link rel="stylesheet" href="profile.css">
+</head>
+<body>
+    <header>
+        <h1>Administrar Perfiles</h1>
+    </header>
+
+    <section class="profile-actions">
+        <h2>Seleccionar Perfil</h2>
+        <div id="profile-list"></div>
+
+        <h2>Crear Perfil</h2>
+        <form id="create-profile-form">
+            <input type="text" id="profile-name" placeholder="Nombre del perfil" required>
+            <input type="number" id="profile-age" placeholder="Edad" required>
+            <select id="profile-type">
+                <option value="Adulto">Adulto</option>
+                <option value="Niño">Niño</option>
+            </select>
+            <button type="submit">Crear Perfil</button>
+        </form>
+        <p id="create-profile-message"></p> <!-- Mensaje de estado al crear perfil -->
+
+        <!-- Botón de eliminar perfil -->
+        <button id="delete-profile-btn">Eliminar Perfil</button>
+    </section>
+
+    <!-- Modal para seleccionar perfil a eliminar -->
+    <div id="delete-profile-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>Selecciona el perfil a eliminar</h3>
+            <select id="delete-profile-select">
+                <!-- Opciones de perfiles serán cargadas aquí -->
+            </select>
+            <button id="confirm-delete-btn">Eliminar</button>
+            <button id="cancel-delete-btn">Cancelar</button>
+        </div>
+    </div>
+
+    <script>
+        const accountId = JSON.parse(localStorage.getItem('user')).id;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadProfiles();
+
+            // Evento para mostrar el modal de eliminación de perfil
+            document.getElementById('delete-profile-btn').addEventListener('click', showDeleteProfileModal);
+
+            // Evento para confirmar la eliminación
+            document.getElementById('confirm-delete-btn').addEventListener('click', confirmDeleteProfile);
+
+            // Evento para cancelar y cerrar el modal
+            document.getElementById('cancel-delete-btn').addEventListener('click', () => {
+                document.getElementById('delete-profile-modal').style.display = 'none';
+            });
+
+            // Crear perfil
+            document.getElementById('create-profile-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                createProfile();
+            });
+        });
+
+        // Función para cargar los perfiles del usuario
+        function loadProfiles() {
+            fetch(`http://localhost:3000/api/profiles?accountId=${accountId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error al cargar los perfiles: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Perfiles cargados:", data);
+                    const profileList = document.getElementById('profile-list');
+                    profileList.innerHTML = '';
+
+                    if (data.length > 0) {
+                        data.forEach((profile, index) => {
+                            const profileDiv = document.createElement('div');
+                            profileDiv.classList.add('profile-card');
+                            const color = getRandomColor();
+
+                            profileDiv.innerHTML = `
+                                <div class="profile-circle" style="background-color: ${color};"></div>
+                                <span>${profile.Nombre}</span>
+                              <button onclick="selectProfile(${profile.ID}, '${profile.Nombre}')" class="action-button">Seleccionar</button>
+
+                            `;
+                            profileList.appendChild(profileDiv);
+                        });
+                    } else {
+                        profileList.innerHTML = '<p>No hay perfiles disponibles. Crea uno nuevo.</p>';
+                    }
+
+                    // Cargar los perfiles en el selector de eliminación
+                    const deleteProfileSelect = document.getElementById('delete-profile-select');
+                    deleteProfileSelect.innerHTML = '';
+                    data.forEach(profile => {
+                        const option = document.createElement('option');
+                        option.value = profile.ID;
+                        option.textContent = profile.Nombre;
+                        deleteProfileSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error al cargar perfiles:', error);
+                    document.getElementById('profile-list').innerHTML = '<p>Error al cargar los perfiles.</p>';
+                });
+        }
+
+        // Mostrar el modal de eliminación de perfil
+        function showDeleteProfileModal() {
+            document.getElementById('delete-profile-modal').style.display = 'block';
+        }
+
+        function confirmDeleteProfile() {
+    const selectedProfileId = document.getElementById('delete-profile-select').value;
+    console.log("ID del perfil seleccionado para eliminar:", selectedProfileId); // Verificar ID seleccionado
+    if (selectedProfileId) {
+        deleteProfile(selectedProfileId);
+    } else {
+        alert("Selecciona un perfil para eliminar.");
+    }
+}
+
+
+        // Función para eliminar el perfil seleccionado
+        function deleteProfile(id) {
+            fetch(`http://localhost:3000/api/profiles/${id}`, {
+                method: 'DELETE',
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al eliminar el perfil');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    alert("Perfil eliminado con éxito.");
+                    loadProfiles(); // Recargar los perfiles después de eliminar uno
+                    document.getElementById('delete-profile-modal').style.display = 'none'; // Cerrar el modal
+                }
+            })
+            .catch(error => {
+                console.error('Error al eliminar perfil:', error);
+                alert("Error al eliminar el perfil. Inténtalo más tarde.");
+            });
+        }
+
+        // Función para crear un nuevo perfil (sin cambios)
+        function createProfile() {
+            const name = document.getElementById('profile-name').value;
+            const age = document.getElementById('profile-age').value;
+            const type = document.getElementById('profile-type').value;
+            const createMessage = document.getElementById('create-profile-message');
+
+            fetch('http://localhost:3000/api/profiles', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, age, type, accountId })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la creación del perfil');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    createMessage.textContent = 'Perfil creado exitosamente.';
+                    loadProfiles(); // Recargar los perfiles después de crear uno nuevo
+                    document.getElementById('create-profile-form').reset();
+                } else {
+                    createMessage.textContent = 'Error al crear el perfil. Inténtalo de nuevo.';
+                }
+            })
+            .catch(error => {
+                console.error('Error al crear perfil:', error);
+                createMessage.textContent = 'Error de conexión. Inténtalo más tarde.';
+            });
+        }
+
+        // Función para seleccionar un perfil y guardarlo en localStorage (sin cambios)
+        function selectProfile(id) {
+            localStorage.setItem('selectedProfile', id);
+            window.location.href = 'home.html';
+        }
+
+        // Generar un color aleatorio en formato hexadecimal (sin cambios)
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        // Función para seleccionar un perfil y guardarlo en localStorage
+function selectProfile(id, name) {
+    localStorage.setItem('selectedProfileId', id);
+    localStorage.setItem('selectedProfileName', name);
+    window.location.href = 'home.html';
+}
+
+    </script>
+
+    <style>
+        /* Estilos para el modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #333;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            color: #fff;
+        }
+        #delete-profile-select {
+            margin: 10px 0;
+            padding: 5px;
+        }
+    </style>
+</body>
+</html>

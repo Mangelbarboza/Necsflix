@@ -1,0 +1,129 @@
+/* Estilos para la página de autenticación */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #141414; /* Fondo oscuro similar a Netflix */
+    color: #ffffff; /* Texto blanco */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Ocupa toda la altura de la ventana */
+    margin: 0;
+}
+
+h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* Asegura el ancho del formulario */
+    max-width: 320px; /* Limita el ancho máximo para mantener diseño */
+    gap: 15px; /* Espaciado uniforme entre los elementos */
+    padding: 20px; /* Añadir padding para separación interna */
+    box-sizing: border-box;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+select {
+    width: 100%; /* Asegura que todos los campos tengan el mismo ancho */
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    color: #333; /* Texto oscuro */
+    background-color: #f4f4f4; /* Fondo claro para los campos de entrada */
+    box-sizing: border-box;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+select:focus {
+    outline: none; /* Sin borde en el enfoque */
+    border: 2px solid #e50914; /* Resalta el borde con color de Netflix */
+}
+
+button {
+    width: 100%; /* Asegura que los botones tengan el mismo ancho */
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    background-color: #e50914; /* Color de botón similar a Netflix */
+    color: #fff;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #d40813; /* Color más oscuro al pasar el ratón */
+}
+
+#message {
+    margin-top: 15px;
+    color: #737373; /* Color gris para los mensajes */
+    text-align: center;
+}
+
+a {
+    color: #e50914; /* Color de los enlaces */
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline; /* Subrayar al pasar el ratón */
+}
+
+/* Estilo para los campos del formulario de registro */
+#registro-form input[type="text"],
+#registro-form input[type="password"],
+#registro-form input[type="email"],
+#registro-form select {
+    width: 100%; /* Asegura que todos los campos tengan el mismo ancho */
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #f4f4f4;
+    color: #333;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+#registro-form input[type="text"]:focus,
+#registro-form input[type="password"]:focus,
+#registro-form input[type="email"]:focus,
+#registro-form select:focus {
+    border: 2px solid #e50914;
+    outline: none;
+}
+
+#registro-form select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23333" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 10px;
+}
+
+#registro-form button {
+    width: 100%; /* Asegura que los botones tengan el mismo ancho */
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #e50914; /* Color de botón similar a Netflix */
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#registro-form button:hover {
+    background-color: #d40813; /* Color más oscuro al pasar el ratón */
+}

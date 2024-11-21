@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reproductor de Video - Netflix Clone</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="navbar-logo">
+            <a href="index.html">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/Netflix_icon.svg" alt="Netflix Logo">
+            </a>
+        </div>
+    </header>
+
+    <!-- Video Player Section -->
+    <section class="video-player-container">
+        <h2>Reproduciendo Video</h2>
+        <iframe id="trailer" width="765" height="430" src="" 
+                title="Reproduciendo Trailer" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                referrerpolicy="strict-origin-when-cross-origin" 
+                allowfullscreen>
+        </iframe>
+    </section>
+
+    <!-- Rating and Comments Section -->
+    <section class="feedback-section">
+        <h3>Califica y deja tu comentario</h3>
+
+        <!-- Rating (5-star system) -->
+        <div class="rating">
+            <span data-value="1" class="star">★</span>
+            <span data-value="2" class="star">★</span>
+            <span data-value="3" class="star">★</span>
+            <span data-value="4" class="star">★</span>
+            <span data-value="5" class="star">★</span>
+        </div>
+        <input type="hidden" id="rating" value="0">
+
+        <!-- Comment Input -->
+        <textarea id="comment" placeholder="Escribe tu comentario sobre la película"></textarea>
+
+        <!-- Submit Button -->
+        <button onclick="submitFeedback()">Enviar Comentario</button>
+    </section>
+    <!-- Recommendation Section -->
+    <section class="recommendation-section" id="recommendation">
+        <h3>Te recomendamos ver</h3>
+        <div class="recommended-movie" style="display: none;">
+            <a id="recommended-link" href="">
+                <img id="recommended-image" src="" alt="Película Recomendada" class="recommended-image">
+            </a>
+            <p id="recommended-title"></p>
+        </div>
+    </section>
+
+    <script>
+        // Función para obtener los parámetros de la URL
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        // Obtener el ID de la película de la URL
+        var movieId = getUrlParameter('movie');
+
+        // Mapear los IDs de películas a sus respectivos trailers
+        var trailers = {
+            1: 'https://uqload.net/embed-yueayp66bndl.html',
+            2: 'https://www.youtube.com/embed/0qSarZpylxs',
+            3: 'https://www.youtube.com/embed/0qSarZpylxs',
+            4: 'https://www.youtube.com/embed/0qSarZpylxs',
+            5: 'https://www.youtube.com/embed/0qSarZpylxs',
+            6: 'https://mega.nz/embed/EzoVWKTQ#KfwE4UDIzkSArMxwMO43qRWhcmSa5ZrTeZXQkDND-iw',   // Rapidos y furiosos 9
+            7: 'https://mega.nz/embed/bVRl3a4C#Bwlz9Up6hDFcx_WclPNAjSdEIdOfWQybBfyfCsd9ySo',   // Bad Boys
+            8: 'https://mega.nz/embed/6Rg2jCCA#YEj-sadRJsRGJPEtqpd76fAO7qmc38X6_TRCGMAIRbQ',   // Extraxion 1
+            9: 'https://mega.nz/embed/Oc8ghKCJ#vjqpXkIArD6c_4nmevFR6iOdvE2KIqkfWUwAp0kSGgI',   // xXx
+            10: 'https://mega.nz/embed/MRxk1ZAT#gD1GwQQXx17jAPp_uxBOU0hvFneJF0T5K302-eap_Cg',  // John wick 2
+            11: 'https://mega.nz/embed/nzQyGQoK#TtG8LE3WkH2JsorGOZSPax8Lx2pBUBiipElOL3tXFU4',  // Avengers infinity war
+            12: 'https://mega.nz/embed/4zYx1AoL#WJWV3k1nxTDx7gvYkv1ONMheEETHZuJ9RBmdy1PhfN4',   // Dragon ball z
+            13: 'https://mega.nz/embed/b0Q3HSKB#F62xpUBfi-5AKQ8DrcNjqWgyCd4R7YSmded2-C_bANA',   // Doctor strange
+            14: 'https://mega.nz/embed/b0Q3HSKB#F62xpUBfi-5AKQ8DrcNjqWgyCd4R7YSmded2-C_bANA',   // Iron Man
+            15: 'https://www.youtube.com/embed/0qSarZpylxs',
+            16: 'https://www.youtube.com/embed/0qSarZpylxs',
+            17: 'https://www.youtube.com/embed/0qSarZpylxs',
+            18: 'https://www.youtube.com/embed/0qSarZpylxs',
+            19: 'https://www.youtube.com/embed/0qSarZpylxs',
+            20: 'https://www.youtube.com/embed/0qSarZpylxs',
+            21: 'https://www.youtube.com/embed/0qSarZpylxs',
+            22: 'https://www.youtube.com/embed/0qSarZpylxs',
+            23: 'https://www.youtube.com/embed/0qSarZpylxs',
+            24: 'https://www.youtube.com/embed/0qSarZpylxs',
+            25: 'https://www.youtube.com/embed/0qSarZpylxs',
+            26: 'https://www.youtube.com/embed/0qSarZpylxs',
+            27: 'https://www.youtube.com/embed/0qSarZpylxs',
+            28: 'https://www.youtube.com/embed/0qSarZpylxs',
+            29: 'https://www.youtube.com/embed/0qSarZpylxs',
+            30: 'https://www.youtube.com/embed/0qSarZpylxs',
+            31: 'https://www.youtube.com/embed/0qSarZpylxs',
+            32: 'https://www.youtube.com/embed/0qSarZpylxs',
+            33: 'https://www.youtube.com/embed/0qSarZpylxs',
+            34: 'https://www.youtube.com/embed/0qSarZpylxs',
+            35: 'https://www.youtube.com/embed/0qSarZpylxs',
+            36: 'https://www.youtube.com/embed/0qSarZpylxs',
+            37: 'https://www.youtube.com/embed/0qSarZpylxs',
+            38: 'https://www.youtube.com/embed/0qSarZpylxs',
+            39: 'https://www.youtube.com/embed/0qSarZpylxs',
+            40: 'https://www.youtube.com/embed/0qSarZpylxs',
+            41: 'https://www.youtube.com/embed/0qSarZpylxs',
+            42: 'https://www.youtube.com/embed/0qSarZpylxs',
+            43: 'https://www.youtube.com/embed/0qSarZpylxs',
+            44: 'https://www.youtube.com/embed/0qSarZpylxs',
+            45: 'https://www.youtube.com/embed/0qSarZpylxs',
+        };
+
+        // Cargar el trailer correspondiente
+        if (trailers[movieId]) {
+            document.getElementById('trailer').src = trailers[movieId] + '?autoplay=1'; // Agrega autoplay si es necesario
+        } else {
+            console.error('Trailer no encontrado para la película con ID: ' + movieId);
+        }
+
+        // Script para seleccionar la calificación en estrellas
+        document.querySelectorAll('.star').forEach(star => {
+            star.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+                document.getElementById('rating').value = value;
+                
+                // Resalta las estrellas hasta la seleccionada
+                document.querySelectorAll('.star').forEach(s => {
+                    s.style.color = s.getAttribute('data-value') <= value ? '#FFD700' : '#333';
+                });
+            });
+        });
+
+        // Función para enviar la calificación y el comentario al servidor
+        function submitFeedback() {
+    const rating = document.getElementById('rating').value;
+    const comment = document.getElementById('comment').value;
+
+    // Variables de ejemplo para profileId y accountId; reemplázalas con los valores reales
+    const profileId = "Perfil1"; // Asigna el ID del perfil del usuario autenticado
+    const accountId = 1; // Asigna el ID de la cuenta del usuario autenticado
+
+    if (rating === '0') {
+        alert("Por favor selecciona una calificación.");
+        return;
+    }
+    if (!comment) {
+        alert("Por favor escribe un comentario.");
+        return;
+    }
+
+    // Enviar la calificación y el comentario al servidor
+    fetch('http://localhost:3000/api/feedback', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            movieId: movieId,
+            rating: rating,
+            comment: comment,
+            profileId: profileId,
+            accountId: accountId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("¡Gracias por tu comentario!");
+            document.getElementById('comment').value = '';
+            document.getElementById('rating').value = '0';
+            document.querySelectorAll('.star').forEach(s => s.style.color = '#333');
+        } else {
+            alert("Hubo un error al enviar tu comentario. Inténtalo de nuevo.");
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+// Función para cargar la recomendación de película
+function loadRecommendation(movieId) {
+    fetch(`http://localhost:3000/api/recomendacion/${movieId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data && !data.error) {
+                // Mostrar la película recomendada
+                document.getElementById('recommended-link').href = `player.html?movie=${data.ID}`;
+                document.getElementById('recommended-image').src = data.URL_Caratula;
+                document.getElementById('recommended-title').textContent = data.Nombre;
+                document.querySelector('.recommended-movie').style.display = 'flex';
+            } else {
+                console.log('No se encontró una recomendación para esta película.');
+            }
+        })
+        .catch(error => console.error('Error al cargar la recomendación:', error));
+}
+
+// Llamar a la función loadRecommendation con el ID de la película actual
+loadRecommendation(movieId);
+
+
+// Función para registrar visualización
+function registrarVisualizacion() {
+    const profileName = localStorage.getItem('selectedProfileName'); // Nombre del perfil
+    const movieId = getUrlParameter('movie'); // ID de la película
+    const fechaVisualizacion = new Date().toISOString().split('T')[0]; // Fecha actual
+
+    if (!profileName || !movieId) {
+        console.error('Error: Nombre del perfil o ID de película no especificados');
+        return;
+    }
+
+    console.log({
+        profileName, // Nombre del perfil
+        movieId, // ID de la película
+        fechaVisualizacion // Fecha de visualización
+    });
+
+    // Enviar la solicitud al servidor
+    fetch('http://localhost:3000/api/ver', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            profileName,
+            movieId,
+            fechaVisualizacion
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('Visualización registrada con éxito');
+        } else {
+            console.error('Error al registrar visualización:', data.message);
+        }
+    })
+    .catch(error => console.error('Error en la solicitud:', error));
+}
+
+registrarVisualizacion();
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,482 @@
+/* Reset Básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #141414;
+    color: #ffffff;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: #000;
+}
+
+.navbar-logo img {
+    width: 100px;
+}
+
+.navbar-links a {
+    color: #ffffff;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.navbar-user .btn-login {
+    background-color: #e50914;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+/* Banner */
+.banner {
+    position: relative;
+    height: 70vh;
+    background: url('https://via.placeholder.com/1920x800') no-repeat center center/cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #ffffff;
+}
+
+.banner-content h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.banner-content p {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+.btn-primary {
+    background-color: #e50914;
+    color: #ffffff;
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    cursor: pointer;
+}
+
+/* Recommendations Section */
+.recommendations {
+    padding: 20px;
+}
+
+.recommendations h2 {
+    font-size: 1.8em;
+    margin-bottom: 10px;
+}
+
+.movie-grid {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 10px 0;
+}
+
+.movie-grid.scrollable {
+    scrollbar-width: thin;
+    scrollbar-color: #333 #141414;
+}
+
+.movie-grid::-webkit-scrollbar {
+    height: 8px;
+}
+
+.movie-grid::-webkit-scrollbar-thumb {
+    background-color: #333;
+    border-radius: 4px;
+}
+
+.movie-grid::-webkit-scrollbar-track {
+    background: #141414;
+}
+
+.movie-card img {
+    width: 150px;
+    height: 225px;
+    border-radius: 5px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.movie-card img:hover {
+    transform: scale(1.05);
+}
+
+/* Video Player Page */
+.video-player-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    color: #ffffff;
+}
+
+.video-player-container h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+#videoPlayer {
+    width: 80%;
+    max-width: 800px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Footer */
+.footer {
+    background-color: #181818;
+    text-align: center;
+    padding: 15px 0;
+    font-size: 0.8em;
+    color: #737373;
+}
+
+.footer p {
+    margin-bottom: 5px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        padding: 10px 20px;
+    }
+
+    .navbar-logo img {
+        width: 80px;
+        margin-bottom: 10px;
+    }
+
+    .banner {
+        height: 50vh;
+    }
+
+    .banner-content h1 {
+        font-size: 2em;
+    }
+
+    .banner-content p {
+        font-size: 1em;
+    }
+
+    .movie-grid {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .movie-card img {
+        width: 120px;
+        height: 180px;
+    }
+
+    .footer {
+        padding: 10px 0;
+    }
+}
+
+/* Hover Effects */
+.navbar-links a:hover,
+.btn-login:hover,
+.btn-primary:hover {
+    opacity: 0.8;
+}
+
+.clicked {
+    transform: scale(0.95);
+    transition: transform 0.1s ease;
+}
+
+.sql-query-section {
+    padding: 20px;
+    background-color: #181818;
+    color: #ffffff;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.sql-query-section h2 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.sql-query-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.sql-query-container textarea {
+    width: 80%;
+    max-width: 600px;
+    height: 100px;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #333;
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    resize: vertical;
+}
+
+.sql-query-container button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #e50914;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.sql-query-container button:hover {
+    background-color: #d40813;
+}
+
+.sql-result {
+    width: 80%;
+    max-width: 600px;
+    min-height: 150px;
+    margin: 20px auto 0;
+    padding: 15px;
+    color: #333;
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: monospace;
+    text-align: left;
+    white-space: pre-wrap;
+    overflow-y: auto;
+}
+
+/* Feedback Section - Rating and Comments */
+.feedback-section {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #181818;
+    color: #ffffff;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    width: 90%;
+    max-width: 600px;
+    margin: 40px auto;
+}
+
+.feedback-section h3 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+}
+
+.rating {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.rating label {
+    font-size: 2em;
+    cursor: pointer;
+    color: #444;
+    transition: color 0.3s ease;
+}
+
+.rating input[type="radio"] {
+    display: none;
+}
+
+.rating input[type="radio"]:checked ~ label {
+    color: #e50914;
+}
+
+.rating label:hover,
+.rating label:hover ~ label {
+    color: #e50914;
+}
+
+/* Comment Textarea */
+textarea#comment {
+    width: 100%;
+    max-width: 100%;
+    height: 100px;
+    padding: 10px;
+    margin-bottom: 20px;
+    font-size: 1em;
+    color: #333;
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    resize: vertical;
+    outline: none;
+    transition: box-shadow 0.3s ease;
+}
+
+textarea#comment:focus {
+    box-shadow: 0 0 5px #e50914;
+}
+
+/* Submit Button */
+.feedback-section button {
+    padding: 10px 20px;
+    font-size: 1em;
+    color: #fff;
+    background-color: #e50914;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+.feedback-section button:hover {
+    background-color: #d40813;
+}
+
+.feedback-section button:active {
+    transform: scale(0.95);
+}
+
+/* Responsive Adjustments for Feedback Section */
+@media (max-width: 768px) {
+    .feedback-section h3 {
+        font-size: 1.5em;
+    }
+
+    .rating label {
+        font-size: 1.8em;
+    }
+}
+/* Rating Stars */
+.rating {
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* Aumentar el espacio entre estrellas */
+    margin-bottom: 40px;
+}
+
+.rating label {
+    font-size: 2.5em; /* Aumenta el tamaño de las estrellas */
+    cursor: pointer;
+    color: #444;
+    transition: color 0.3s ease;
+}
+/* Recommendation Section */
+.recommendation-section {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #181818;
+    color: #ffffff;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    width: 90%;
+    max-width: 600px;
+    margin: 40px auto;
+}
+
+.recommended-movie {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.recommended-image {
+    width: 150px;
+    height: 225px;
+    border-radius: 8px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.recommended-image:hover {
+    transform: scale(1.05);
+}
+
+#recommended-title {
+    font-size: 1.2em;
+    margin-top: 10px;
+    color: #e50914;
+}
+
+/* Estilos para la sección de Mejor Calificadas */
+.best-rated-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding: 10px 0;
+}
+
+.best-rated-card {
+    position: relative;
+    text-align: center;
+    width: 150px;
+}
+
+.best-rated-card img {
+    width: 150px;
+    height: 225px;
+    border-radius: 5px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.best-rated-card img:hover {
+    transform: scale(1.05);
+}
+
+.rating-circle {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e50914;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9em;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.star-icon {
+    font-size: 0.8em;
+    color: gold;
+    margin-left: 5px;
+}
+
+/* Estilo para la etiqueta "Recientemente visto" */
+.recently-viewed {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #e50914;
+    color: #fff;
+    padding: 5px 10px;
+    font-size: 0.8em;
+    border-radius: 3px;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+

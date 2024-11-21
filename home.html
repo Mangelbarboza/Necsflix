@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix - Clone</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="navbar-logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/Netflix_icon.svg" alt="Netflix Logo">
+        </div>
+        <div class="navbar-links">
+            <a href="#">Inicio</a>
+            <a href="#">Series</a>
+            <a href="#">Películas</a>
+            <a href="consultas.html">Consultas ( SQL )</a>
+            <a href="#">Mi lista</a>
+        </div>
+        <div class="navbar-user">
+            <span id="profile-name">Cargando perfil...</span>
+            <button id="change-user" class="btn-login">Cambiar de usuario</button>
+        </div>
+    </header>
+
+    <!-- Main Banner -->
+    <section class="banner" style="background-image: url('https://picsum.photos/1920/800?random=50');">
+        <div class="banner-content">
+            <h1>Películas y series ilimitadas y mucho más.</h1>
+            <p>Disfruta donde quieras. Cancela cuando quieras.</p>
+            <button class="btn-primary">Ver Ahora</button>
+        </div>
+    </section>
+
+    <!-- Recommendations Sections -->
+    <section class="recommendations">
+        <h2>Continuar viendo</h2>
+        <div id="continue-watching" class="movie-grid scrollable"></div>
+    </section>
+
+    <div class="recommendations">
+        <h2>Mejor calificadas</h2>
+        <div id="best-rated-grid" class="movie-grid scrollable">
+            <!-- Las películas mejor calificadas se insertarán aquí dinámicamente -->
+        </div>
+    </div>
+    
+    
+
+    <section class="recommendations">
+        <h2>Acción</h2>
+        <div id="action" class="movie-grid scrollable"></div>
+    </section>
+
+    <section class="recommendations">
+        <h2>Comedia</h2>
+        <div id="comedy" class="movie-grid scrollable"></div>
+    </section>
+
+    <section class="recommendations">
+        <h2>Drama</h2>
+        <div id="drama" class="movie-grid scrollable"></div>
+    </section>
+
+    <!-- SQL Query Section 
+    <section class="sql-query-section">
+        <h2>Ejecutar Consulta SQL</h2>
+        <div class="sql-query-container">
+            <textarea id="sql-query" placeholder="Escribe tu consulta SQL aquí..." rows="4"></textarea>
+            <button onclick="executeSQL()">Ejecutar Consulta</button>
+        </div>
+        <div id="sql-result" class="sql-result" placeholder="Resultados...">Resultados de la consulta aparecerán aquí</div>
+    </section> -->
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2023 Netflix Clone</p>
+        <p>Política de Privacidad · Términos de Uso · Contacto</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="scrip.js"></script>
+    
+    <!-- Script para cargar películas de la API -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const changeUserButton = document.getElementById("change-user");
+            const profileNameSpan = document.getElementById("profile-name");
+
+            // Obtener el nombre del perfil del localStorage
+            const selectedProfileName = localStorage.getItem("selectedProfileName");
+
+            if (selectedProfileName) {
+                profileNameSpan.textContent = `Perfil: ${selectedProfileName}`;
+            } else {
+                profileNameSpan.textContent = "Perfil no seleccionado";
+            }
+
+            // Asignar la función de redirección al botón "Cambiar de usuario"
+            changeUserButton.addEventListener("click", () => {
+                window.location.href = "profile.html";
+            });
+
+            // Cargar películas
+            fetch('http://localhost:3000/api/peliculas')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Error al cargar las películas");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const genres = {
+                        'Continuar viendo': document.getElementById('continue-watching'),
+                        'Popular en tu zona': document.getElementById('popular-in-your-area'),
+                        'Acción': document.getElementById('action'),
+                        'Comedia': document.getElementById('comedy'),
+                        'Drama': document.getElementById('drama')
+                    };
+
+                    data.forEach(movie => {
+                        const movieCard = document.createElement('a');
+                        movieCard.href = `player.html?movie=${movie.ID}`;
+                        movieCard.classList.add('movie-card');
+
+                        const img = document.createElement('img');
+                        img.src = movie.URL_Caratula;
+                        img.alt = movie.Nombre;
+
+                        movieCard.appendChild(img);
+
+                        if (genres[movie.Genero]) {
+                            genres[movie.Genero].appendChild(movieCard);
+                        }
+                    });
+                })
+                .catch(error => console.error('Error al cargar películas:', error));
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+    // Llama a la API para obtener las mejores películas calificadas
+    fetch("http://localhost:3000/api/mejor-calificadas")
+        .then(response => response.json())
+        .then(data => {
+            const bestRatedGrid = document.getElementById("best-rated-grid");
+            data.forEach(movie => {
+                // Crear la tarjeta de la película
+                const movieCard = document.createElement("div");
+                movieCard.classList.add("best-rated-card");
+
+                // Agregar la imagen de la película
+                const movieImage = document.createElement("img");
+                movieImage.src = movie.URL_Caratula || "https://via.placeholder.com/150";
+                movieImage.alt = movie.Nombre;
+
+                // Agregar el círculo con la calificación promedio
+                const ratingCircle = document.createElement("div");
+                ratingCircle.classList.add("rating-circle");
+                ratingCircle.innerHTML = `${movie.promedio_calificacion.toFixed(1)} <span class="star-icon">★</span>`;
+
+                // Título de la película
+                const movieTitle = document.createElement("div");
+                movieTitle.classList.add("movie-title");
+                movieTitle.textContent = movie.Nombre;
+
+                // Añadir elementos a la tarjeta
+                movieCard.appendChild(movieImage);
+                movieCard.appendChild(ratingCircle);
+                movieCard.appendChild(movieTitle);
+
+                // Añadir la tarjeta a la cuadrícula
+                bestRatedGrid.appendChild(movieCard);
+            });
+        })
+        .catch(error => console.error("Error al obtener las películas mejor calificadas:", error));
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Obtén el nombre del perfil seleccionado desde localStorage
+    const selectedProfileName = localStorage.getItem('selectedProfileName');
+
+    if (selectedProfileName) {
+        console.log('Perfil seleccionado:', selectedProfileName); // Depuración
+
+        // Muestra el nombre del perfil en la página
+        document.getElementById("profile-name").textContent = `Perfil: ${selectedProfileName}`;
+
+        // Llama a la API para obtener las películas vistas recientemente
+        fetch(`http://localhost:3000/api/continuar-viendo?profileName=${encodeURIComponent(selectedProfileName)}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Error en la solicitud: " + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Películas continuando viendo:', data); // Depuración
+
+                const continueWatchingGrid = document.getElementById("continue-watching");
+                continueWatchingGrid.innerHTML = ''; // Limpia el contenido previo
+
+                if (data.length === 0) {
+                    const noMoviesMessage = document.createElement("p");
+                    noMoviesMessage.textContent = "No tienes películas recientes para continuar viendo.";
+                    continueWatchingGrid.appendChild(noMoviesMessage);
+                } else {
+                    data.forEach(movie => {
+                        // Crear la tarjeta de la película
+                        const movieCard = document.createElement("a");
+                        movieCard.classList.add("movie-card");
+                        movieCard.href = `player.html?movie=${movie.ID}`;
+
+                        // Imagen de la película
+                        const movieImage = document.createElement("img");
+                        movieImage.src = movie.URL_Caratula || "https://via.placeholder.com/150";
+                        movieImage.alt = movie.Nombre;
+
+                        // Añadir elementos a la tarjeta
+                        movieCard.appendChild(movieImage);
+
+                        // Añadir la tarjeta a la cuadrícula
+                        continueWatchingGrid.appendChild(movieCard);
+                    });
+                }
+            })
+            .catch(error => console.error("Error al obtener películas para continuar viendo:", error));
+    } else {
+        console.warn("Nombre del perfil no encontrado en localStorage.");
+        document.getElementById("profile-name").textContent = "Perfil no seleccionado";
+    }
+});
+
+
+
+
+    </script>
+</body>
+</html>

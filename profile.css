@@ -1,0 +1,125 @@
+/* Estilo general */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #141414; /* Fondo oscuro como en Netflix */
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+}
+
+/* Encabezado */
+header h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #e5e5e5;
+}
+
+/* Contenedor de los perfiles */
+.profile-section {
+    text-align: center;
+    max-width: 800px;
+    width: 100%;
+}
+
+#profile-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Tarjeta de perfil */
+.profile-card {
+    background-color: #333;
+    border-radius: 10px;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.profile-card:hover {
+    transform: scale(1.1);
+}
+
+/* Imagen de perfil circular */
+.profile-card img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.profile-card span {
+    color: #e5e5e5;
+    font-size: 0.9em;
+}
+
+/* Botón de selección */
+button {
+    background-color: #e50914; /* Color de Netflix */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+}
+
+button:hover {
+    background-color: #b20710;
+}
+
+/* Formulario para crear perfil */
+#create-profile-section {
+    background-color: #333;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+    max-width: 300px;
+    width: 100%;
+}
+
+#create-profile-section h2 {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+}
+
+#create-profile-form input,
+#create-profile-form select,
+#create-profile-form button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+#create-profile-form input,
+#create-profile-form select {
+    background-color: #444;
+    color: #fff;
+}
+
+#create-profile-form button {
+    background-color: #e50914;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#create-profile-form button:hover {
+    background-color: #b20710;
+}

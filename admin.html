@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <h1>Panel de Administración</h1>
+    </header>
+
+    <!-- SQL Query Section -->
+    <section class="sql-query-section">
+        <h2>Ejecutar Consulta SQL</h2>
+        <div class="sql-query-container">
+            <textarea id="sql-query" placeholder="Escribe tu consulta SQL aquí..." rows="4"></textarea>
+            <button onclick="executeSQL()">Ejecutar Consulta</button>
+        </div>
+        <div id="sql-result" class="sql-result" placeholder="Resultados...">Resultados de la consulta aparecerán aquí</div>
+    </section>
+
+    <footer class="footer">
+        <p>© 2023 Netflix Clone</p>
+        <p>Política de Privacidad · Términos de Uso · Contacto</p>
+    </footer>
+
+    <script>
+        // Función para ejecutar la consulta SQL
+        function executeSQL() {
+            const query = document.getElementById('sql-query').value;
+
+            if (!query.trim()) {
+                alert('Escribe una consulta SQL.');
+                return;
+            }
+
+            // Enviar la consulta al servidor
+            fetch('http://localhost:3000/execute-sql', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ query })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('sql-result');
+                if (data.error) {
+                    resultDiv.textContent = `Error: ${data.error}`;
+                } else {
+                    resultDiv.textContent = JSON.stringify(data.result, null, 2);
+                }
+            })
+            .catch(error => {
+                console.error('Error ejecutando la consulta:', error);
+                document.getElementById('sql-result').textContent = 'Error ejecutando la consulta';
+            });
+        }
+    </script>
+</body>
+</html>

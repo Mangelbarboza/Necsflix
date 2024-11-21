@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultas SQL - Netflix Clone</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="navbar-logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/Netflix_icon.svg" alt="Netflix Logo">
+        </div>
+        <div class="navbar-links">
+            <a href="index.html">Inicio</a>
+            <a href="#">Series</a>
+            <a href="#">Películas</a>
+            <a href="consultas.html">Consultas ( SQL )</a>
+            <a href="#">Mi lista</a>
+        </div>
+        <div class="navbar-user">
+            <span id="profile-name">Cargando perfil...</span>
+            <button id="change-user" class="btn-login">Cambiar de usuario</button>
+        </div>
+    </header>
+
+    <!-- SQL Query Section -->
+    <section class="sql-query-section">
+        <h2>Ejecutar Consulta SQL</h2>
+        <div class="sql-query-container">
+            <textarea id="sql-query" placeholder="Escribe tu consulta SQL aquí..." rows="4"></textarea>
+            <button onclick="executeSQL()">Ejecutar Consulta</button>
+        </div>
+        <div id="sql-result" class="sql-result">Resultados de la consulta aparecerán aquí</div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2023 Netflix Clone</p>
+        <p>Política de Privacidad · Términos de Uso · Contacto</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        function executeSQL() {
+            const query = document.getElementById('sql-query').value;
+
+            // Llamada a un API (simulada aquí) para ejecutar consultas SQL
+            fetch('http://localhost:3000/api/execute-sql', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ query })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultContainer = document.getElementById('sql-result');
+                resultContainer.textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                console.error('Error al ejecutar la consulta SQL:', error);
+                document.getElementById('sql-result').textContent = 'Error al ejecutar la consulta.';
+            });
+        }
+
+        // Código para manejar el perfil en el header
+        document.addEventListener("DOMContentLoaded", () => {
+            const changeUserButton = document.getElementById("change-user");
+            const profileNameSpan = document.getElementById("profile-name");
+
+            // Obtener el nombre del perfil del localStorage
+            const selectedProfileName = localStorage.getItem("selectedProfileName");
+
+            if (selectedProfileName) {
+                profileNameSpan.textContent = `Perfil: ${selectedProfileName}`;
+            } else {
+                profileNameSpan.textContent = "Perfil no seleccionado";
+            }
+
+            // Asignar la función de redirección al botón "Cambiar de usuario"
+            changeUserButton.addEventListener("click", () => {
+                window.location.href = "profile.html";
+            });
+        });
+    </script>
+</body>
+</html>
