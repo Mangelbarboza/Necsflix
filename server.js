@@ -3,41 +3,25 @@ const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors'); // Importa CORS
 
 const app = express();
-const PORT = process.env.PORT || 3000; // Usar el puerto dinámico asignado por Render
-
-const path = require('path');
-
-// Configuración de CORS
-const allowedOrigins = [
-  'http://127.0.0.1:5500', // Para desarrollo local
-  'https://necsflix.onrender.com', // Dominio de tu frontend en producción
-];
-
-// Configuración de CORS
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('No permitido por CORS'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos HTTP permitidos
-  credentials: true
-}));
-
+const PORT = 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(__dirname));
+
+// Configura CORS para permitir solicitudes desde el puerto 5500
+app.use(cors({
+  origin: 'http://127.0.0.1:5500'
+}));
+
+app.use(express.json());
+app.use(express.static('public'));
 
 // Configura la base de datos SQLite
-const db = new sqlite3.Database('./data/database.sqlite', (err) => {
+const db = new sqlite3.Database('./database.sqlite', (err) => {
   if (err) {
     console.error('Error al abrir la base de datos', err.message);
   } else {
     console.log('Conexión a la base de datos SQLite exitosa');
-    // Crear tabla si no existe
     db.run(`CREATE TABLE IF NOT EXISTS Cuenta (
       ID INTEGER PRIMARY KEY AUTOINCREMENT,
       Nombre TEXT,
@@ -53,12 +37,6 @@ const db = new sqlite3.Database('./data/database.sqlite', (err) => {
       }
     });
   }
-});
-
-
-// Ruta principal
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // Ruta para registrar un nuevo usuario
@@ -95,6 +73,7 @@ app.post('/register', (req, res) => {
   });
 });
 
+
 // Ruta para iniciar sesión
 app.post('/login', (req, res) => {
   const { correo, contrasena } = req.body;
@@ -104,6 +83,7 @@ app.post('/login', (req, res) => {
       res.json({ success: false, message: 'Error en la consulta: ' + err.message });
     } else if (row) {
       if (row.Contraseña === contrasena) {
+        // Envía el ID del usuario en la respuesta de inicio de sesión
         res.json({ success: true, userId: row.ID });
       } else {
         res.json({ success: false, message: 'Contraseña incorrecta' });
@@ -114,12 +94,17 @@ app.post('/login', (req, res) => {
   });
 });
 
+
+app.listen(PORT, () => {
+  console.log(`Servidor escuchando en http://localhost:${PORT}`);
+});
+
 // Ruta para obtener todas las películas con sus carátulas
 app.get('/api/peliculas', (req, res) => {
   const query = `
-    SELECT Pelicula.ID, Pelicula.Nombre, Pelicula.Genero, Caratula.URL_Caratula
-    FROM Pelicula
-    JOIN Caratula ON Pelicula.ID = Caratula.ID_Pelicula
+      SELECT Pelicula.ID, Pelicula.Nombre, Genero.Genero, Caratula.URL_Caratula
+      FROM Pelicula 
+      JOIN Caratula ON Pelicula.ID = Caratula.ID_Pelicula INNER JOIN Genero ON Genero.Pelicula_id = Pelicula.ID
   `;
 
   db.all(query, [], (err, rows) => {
@@ -127,12 +112,10 @@ app.get('/api/peliculas', (req, res) => {
       console.error('Error al obtener películas:', err.message);
       res.status(500).json({ error: err.message });
     } else {
-      res.json(rows);
+      res.json(rows); // Devuelve el resultado como un array de objetos JSON
     }
   });
 });
-
-
 // Ruta para recibir la calificación y el comentario
 app.post('/api/feedback', (req, res) => {
   const { movieId, rating, comment, profileId, accountId } = req.body;
@@ -450,8 +433,4 @@ app.post('/admin-login', (req, res) => {
   } else {
       res.json({ isAdmin: false, message: 'Credenciales inválidas o no eres administrador.' });
   }
-});
-
-app.listen(PORT, () => {
-  console.log(`Servidor escuchando en http://localhost:${PORT}`);
 });
